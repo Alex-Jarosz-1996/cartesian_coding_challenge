@@ -6,7 +6,7 @@ from .models import ElectricityModel
 
 class ElectricityDBService:
 
-    REQUIRED_COLUMNS = ["state", "price", "timestamp"]
+    REQUIRED_COLUMNS = ["price", "timestamp"]
 
     @staticmethod
     def add_electricity_data_to_db(data: pd.DataFrame):
@@ -28,11 +28,11 @@ class ElectricityDBService:
             # creating object for bulk importing
             objects = [
                 ElectricityModel(
-                    state=row["state"],
+                    state=idx,
                     price=float(str(row["price"])),
                     timestamp=row["timestamp"],
                 )
-                for _, row in data.iterrows()
+                for idx, row in data.iterrows()
             ]
 
             with transaction.atomic():
