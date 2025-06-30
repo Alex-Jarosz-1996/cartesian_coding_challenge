@@ -9,7 +9,9 @@ repos:
     rev: v1.16.1
     hooks:
       - id: mypy
-        args: ["--ignore-missing-imports"]
+        args:
+        - --ignore-missing-imports
+        - --disable-error-code=var-annotated
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.8.3

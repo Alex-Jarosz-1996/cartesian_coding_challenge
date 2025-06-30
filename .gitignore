@@ -1,2 +1,7 @@
+# environmental files
 .env
-__pycache__
+
+# cache files
+__pycache__/
+.mypy_cache
+.ruff_cache
