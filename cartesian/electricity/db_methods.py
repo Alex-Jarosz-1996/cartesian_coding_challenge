@@ -43,3 +43,17 @@ class ElectricityDBService:
 
         except Exception as e:
             raise e
+
+    @staticmethod
+    def delete_electricity_data_from_db() -> int:
+        """
+        Deletes all electricity data from the db.
+        """
+        try:
+            with transaction.atomic():
+                rows_deleted, _ = ElectricityModel.objects.all().delete()
+
+                return rows_deleted
+
+        except Exception as e:
+            raise e

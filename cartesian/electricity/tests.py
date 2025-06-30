@@ -54,6 +54,41 @@ class GetElectricityDataAPITests(APITestCase):
         self.assertEqual(ElectricityModel.objects.count(), 0)
 
 
+class DeleteElectricityDataAPITests(APITestCase):
+    """Tests for the /api/electricity/delete/ endpoint."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse("delete_data")
+
+    def test_delete_electricity_data_success(self):
+        ElectricityModel.objects.bulk_create(
+            [
+                ElectricityModel(
+                    state="VIC",
+                    price=81.52,
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 0)),
+                ),
+                ElectricityModel(
+                    state="VIC",
+                    price=76.32,
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 30)),
+                ),
+            ]
+        )
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Deleted 2", response.json()["error"])
+        self.assertEqual(ElectricityModel.objects.count(), 0)
+
+    def test_delete_electricity_data_no_rows(self):
+        self.assertEqual(ElectricityModel.objects.count(), 0)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("No electricity data to delete", response.json()["error"])
+
+
 class ElectricityDBServiceTests(APITestCase):
     """Unit tests for the DB service layer."""
 

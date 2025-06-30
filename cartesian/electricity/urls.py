@@ -1,5 +1,8 @@
 from django.urls import path
 
-from .views import GetElectricityData
+from .views import DeleteElectricityData, GetElectricityData
 
-urlpatterns = [path("get", GetElectricityData.as_view(), name="get_data")]
+urlpatterns = [
+    path("get", GetElectricityData.as_view(), name="get_data"),
+    path("delete", DeleteElectricityData.as_view(), name="delete_data"),
+]

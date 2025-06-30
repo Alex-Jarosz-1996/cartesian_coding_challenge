@@ -24,3 +24,20 @@ class GetElectricityData(APIView):
 
         except Exception as e:
             return Response({"error": f"Server error: {e}."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DeleteElectricityData(APIView):
+    """
+    API endpoint to retrieve electricity data if it exists.
+    """
+
+    def delete(self, request):
+        try:
+            num_rows_deleted = ElectricityDBService.delete_electricity_data_from_db()
+            if num_rows_deleted:
+                return Response({"error": f"Deleted {num_rows_deleted}."}, status=status.HTTP_200_OK)
+
+            return Response({"error": "No electricity data to delete."}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": f"Server error: {e}."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
