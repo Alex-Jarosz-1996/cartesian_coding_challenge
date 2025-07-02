@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pandas as pd
 from django.db import transaction
 
@@ -54,6 +56,22 @@ class ElectricityDBService:
                 rows_deleted, _ = ElectricityModel.objects.all().delete()
 
                 return rows_deleted
+
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def get_electricity_data_from_db(state: str) -> Optional[list]:
+        """
+        Retrieves electricity data from db.
+        """
+        try:
+            prices = ElectricityModel.objects.filter(
+                state__iexact=state
+            ).values_list(  # using state__iexact for case insensitive matching
+                "price", flat=True
+            )  # flat=True for tuple -> list conversion
+            return list(prices) if prices.exists() else None
 
         except Exception as e:
             raise e
