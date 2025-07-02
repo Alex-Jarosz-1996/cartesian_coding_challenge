@@ -16,6 +16,10 @@ class ElectricityDBService:
         Adds electricity to the db.
         """
         try:
+            # checking if ElectricityModel already contains data
+            if ElectricityModel.objects.exists():
+                return False
+
             # ensuring data is not empty
             if data is None or data.empty:
                 raise ValueError("No electricity data received.")
@@ -42,6 +46,8 @@ class ElectricityDBService:
                     objects,
                     batch_size=1_000,
                 )
+
+            return True
 
         except Exception as e:
             raise e

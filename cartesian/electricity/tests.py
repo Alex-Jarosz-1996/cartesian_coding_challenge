@@ -26,11 +26,7 @@ class GetElectricityDataAPITests(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.url = reverse("get_data")  # resolves to /api/electricity/get_data/
-
-    @patch("electricity.views.get_electricity_data")
-    def test_get_electricity_data_success(self, mock_get_data):
-        """API returns 201 response."""
-        sample_df = pd.DataFrame(
+        cls.data = pd.DataFrame(
             {
                 "price": [81.52, 76.32],
                 "timestamp": [
@@ -41,7 +37,10 @@ class GetElectricityDataAPITests(APITestCase):
             index=pd.Index(["Vic", "Vic"], name="state"),
         )
 
-        mock_get_data.return_value = sample_df
+    @patch("electricity.views.get_electricity_data")
+    def test_get_electricity_data_success(self, mock_get_data):
+        """API returns 201 response."""
+        mock_get_data.return_value = self.data
 
         response = self.client.get(self.url)
 
@@ -51,6 +50,31 @@ class GetElectricityDataAPITests(APITestCase):
         obj = ElectricityModel.objects.first()
         self.assertEqual(obj.state, "Vic")
         self.assertEqual(obj.price, float("81.52"))
+
+    @patch("electricity.views.get_electricity_data")
+    def test_get_electricity_data_already_exists(self, mock_get_data):
+        """API returns 200 response."""
+        ElectricityModel.objects.bulk_create(
+            [
+                ElectricityModel(
+                    state="Vic",
+                    price=float("61.52"),
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 2)),
+                ),
+                ElectricityModel(
+                    state="Vic",
+                    price=float("56.32"),
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 5)),
+                ),
+            ]
+        )
+
+        mock_get_data.return_value = self.data
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ElectricityModel.objects.count(), 2)  # confirm no duplicate rows were added
 
     @patch("electricity.views.get_electricity_data")
     def test_get_electricity_data_empty(self, mock_get_data):
@@ -75,14 +99,14 @@ class DeleteElectricityDataAPITests(APITestCase):
         ElectricityModel.objects.bulk_create(
             [
                 ElectricityModel(
-                    state="VIC",
-                    price=81.52,
-                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 0)),
+                    state="Vic",
+                    price=float("61.52"),
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 2)),
                 ),
                 ElectricityModel(
-                    state="VIC",
-                    price=76.32,
-                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 30)),
+                    state="Vic",
+                    price=float("56.32"),
+                    timestamp=timezone.make_aware(datetime.datetime(2025, 6, 24, 0, 5)),
                 ),
             ]
         )

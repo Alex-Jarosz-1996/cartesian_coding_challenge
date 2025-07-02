@@ -18,7 +18,12 @@ class GetElectricityData(APIView):
             if electricity_data is None:
                 return Response({"error": "No electricity data discovered."}, status=status.HTTP_404_NOT_FOUND)
 
-            ElectricityDBService.add_electricity_data_to_db(data=electricity_data)
+            result = ElectricityDBService.add_electricity_data_to_db(data=electricity_data)
+
+            if not result:
+                return Response(
+                    {"response": "Electricity data already exists. No changes made."}, status=status.HTTP_200_OK
+                )
 
             return Response({"response": "Electricity data saved."}, status=status.HTTP_201_CREATED)
 
