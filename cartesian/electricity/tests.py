@@ -113,7 +113,7 @@ class DeleteElectricityDataAPITests(APITestCase):
 
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("Deleted 2", response.json()["error"])
+        self.assertIn("Deleted 2", response.json()["response"])
         self.assertEqual(ElectricityModel.objects.count(), 0)
 
     def test_delete_electricity_data_no_rows(self):

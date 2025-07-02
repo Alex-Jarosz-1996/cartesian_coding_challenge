@@ -40,7 +40,7 @@ class DeleteElectricityData(APIView):
         try:
             num_rows_deleted = ElectricityDBService.delete_electricity_data_from_db()
             if num_rows_deleted:
-                return Response({"error": f"Deleted {num_rows_deleted}."}, status=status.HTTP_200_OK)
+                return Response({"response": f"Deleted {num_rows_deleted}."}, status=status.HTTP_200_OK)
 
             return Response({"response": "No electricity data to delete."}, status=status.HTTP_200_OK)
 
