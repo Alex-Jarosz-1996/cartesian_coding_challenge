@@ -59,6 +59,8 @@ GET /api/electricity/get_data
 ### 2. Query the mean price for a state:
 ```
 GET /api/electricity/get_mean/VIC
+GET /api/electricity/get_mean/NSW
+GET /api/electricity/get_mean/QLD
 ```
 ### 3. Delete electricity data (optional)
 ```
