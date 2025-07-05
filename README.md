@@ -81,8 +81,16 @@ DB_PORT=5432
 ```
 
 ## Test harness execution
-Unit test can be executed with the following command:
-```python
+1. Ensure that DB_HOST is set to localhost:
+```
+DB_HOST=localhost
+```  
+2. Start the Postgres service:
+```
+docker-compose up db
+```  
+3. Execute unit tests:
+```
 cd cartesian
 python3 manage.py test
 ```
